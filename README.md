@@ -6,7 +6,7 @@ Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [
 
 First add the gem to your gem file
 
-    ``gem mention-tagger``
+    gem mention-tagger
     
 Add ``//= require mention-tagger`` to your application.js file
 
