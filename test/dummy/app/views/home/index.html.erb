@@ -1,13 +1,27 @@
 <h1>Home#index</h1>
 <p>Find me in app/views/home/index.html.erb</p>
 <div>
-<textarea class="mentionbox"></textarea>
+  <textarea class="mentionbox"></textarea>
 </div>
 
 <div id="fb-root"></div>
 
-<!-- <script>
 
+<script>
+  window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '364202233649475', // App ID from the App Dashboard
+      channelUrl : '//' + window.location.host + '/channel.html', // Channel File for x-domain communication
+      status     : true, // check the login status upon init?
+      cookie     : true, // set sessions cookies to allow your server to access the session?
+      xfbml      : true  // parse XFBML tags on this page?
+    });
+
+    Bookface.init(function(){Bookface.connect(loadMentions, function(){}, {}); }, {});
+    // Additional initialization code such as adding Event Listeners goes here
+     
+  };
 
   // Load the SDK's source Asynchronously
   // Note that the debug version is being actively developed and might 
@@ -20,4 +34,4 @@
      js.src = "//connect.facebook.net/en_US/all" + (debug ? "/debug" : "") + ".js";
      ref.parentNode.insertBefore(js, ref);
    }(document, /*debug*/ false));
-</script> -->
+</script>
