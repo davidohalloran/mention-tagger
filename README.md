@@ -4,15 +4,15 @@ Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [
 
 ## Installation
 
-* First add the gem to your gem file
+First add the gem to your gem file
 
-    gem mention-tagger
+    ``gem mention-tagger``
     
-* Add ``//= require mention-tagger`` to your application.js file
+Add ``//= require mention-tagger`` to your application.js file
 
-* Add ``@import 'mention-tagger'`` to your application.css.scss file 
+Add ``@import 'mention-tagger'`` to your application.css.scss file 
 
-* Where you want the mention box to be, add a text area as follows
+Where you want the mention box to be, add a text area as follows
 
     <div>
       <textarea class="mentionbox"></textarea>
@@ -20,7 +20,7 @@ Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [
     
 wrapping the text area in a div is important as without it the plugin goes all screwy. I shall try to look into this when its fully functional.
 
-* Finally when Bookface is connected and we have basic permissions for the user call the setup function
+Finally when Bookface is connected and we have basic permissions for the user call the setup function
 
     $('textarea.mentionbox').setupMentionTagging()
     
