@@ -5,7 +5,7 @@
 //= require_self
 
 /*
- * Mentions Input
+ * Mention tagger based heavily off  Mentions Input 
  * Version 1.0.2
  * Written by: Kenneth Auchenberg (Podio)
  *
@@ -13,6 +13,7 @@
  *
  * License: MIT License - http://www.opensource.org/licenses/mit-license.php
  */
+
 
 (function ($, _, Bookface) {
 
@@ -63,6 +64,20 @@
         }
       }
     },
+    getCursorPosition : function(domNode) {
+        var el = domNode.get(0);
+        var pos = 0;
+        if('selectionStart' in el) {
+            pos = el.selectionStart;
+        } else if('selection' in document) {
+            el.focus();
+            var Sel = document.selection.createRange();
+            var SelLength = document.selection.createRange().text.length;
+            Sel.moveStart('character', -el.value.length);
+            pos = Sel.text.length - SelLength;
+        }
+        return pos;
+    },
     rtrim: function(string) {
       return string.replace(/\s+$/,"");
     }
@@ -70,18 +85,19 @@
 
   var MentionsInput = function (settings) {
 
-    var domInput, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmmentionsOverlay, elmActiveAutoCompleteItem;
+    var domInput, elmInputBox, elmInputWrapper, elmAutocompleteList, elmWrapperBox, elmMentionsOverlay, elmActiveAutoCompleteItem;
     var mentionsCollection = [];
     var autocompleteItemCollection = {};
     var inputBuffer = [];
     var currentDataQuery;
+    var spaceSearch = false;
+    var searching = false;
 
     settings = $.extend(true, {}, defaultSettings, settings );
 
     function initTextarea() {
       elmInputBox = $(domInput);
-      console.log(elmInputBox)
-      elmInputBox.val('&nbsp;')
+
       if (elmInputBox.attr('data-mentions-input') == 'true') {
         return;
       }
@@ -157,18 +173,29 @@
     function addMention(mention) {
 
       var currentMessage = getInputBoxValue();
-
-      // Using a regex to figure out positions
-      var regex = new RegExp("^|\\" + settings.triggerChar + currentDataQuery, "gi");
-      regex.exec(currentMessage);
-
-      var startCaretPosition = regex.lastIndex - currentDataQuery.length - 1;
-      var currentCaretPosition = regex.lastIndex;
-
-      var start = currentMessage.substr(0, startCaretPosition);
-      var end = currentMessage.substr(currentCaretPosition, currentMessage.length);
+      
+      // old way
+      // // Using a regex to figure out positions
+      // var regex = new RegExp("^"+ currentDataQuery +"|\\" + settings.triggerChar + currentDataQuery, "gi");
+      // regex.exec(currentMessage);
+      // 
+      // var startCaretPosition = regex.lastIndex - currentDataQuery.length;
+      // var currentCaretPosition = regex.lastIndex;
+      // 
+      // var start = currentMessage.substr(0, startCaretPosition);
+      // var end = currentMessage.substr(currentCaretPosition, currentMessage.length);
+      
+      var currentCaretPosition = utils.getCursorPosition(elmInputBox);
+      var partialWordLength = currentDataQuery.length;
+      var currentText = elmInputBox.val();
+      
+      var start = currentText.substring(0, currentCaretPosition - partialWordLength)
+      var end = currentText.substring(currentCaretPosition, currentText.length)
+      
+      if (end == '') end = ' ';
+      
       var startEndIndex = (start + mention.value).length + 1;
-
+      
       mentionsCollection.push(mention);
 
       // Cleaning before inserting the value, otherwise auto-complete would be triggered with "old" inputbuffer
@@ -177,7 +204,7 @@
       hideAutoComplete();
 
       // Mentions & syntax message
-      var updatedMessageText = start + mention.value + ' ' + end;
+      var updatedMessageText = start + mention.value  + end;
       elmInputBox.val(updatedMessageText);
       updateValues();
 
@@ -206,23 +233,47 @@
     function onInputBoxBlur(e) {
       hideAutoComplete();
     }
-
+    
+    var previousCharWhiteSpace = function(){
+      var prevChar = elmInputBox.val().substring(elmInputBox.getCursorPosition()-2, elmInputBox.getCursorPosition()-1);
+      return  prevChar == ' ' || prevChar == '<br />' || prevChar == '\n' || prevChar == ''; 
+    };
+    
+    var triggerCharIndex = false;
     function onInputBoxInput(e) {
       updateValues();
       updateMentionsCollection();
       
-      var triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
-      if (triggerCharIndex > -1) {
+      // if we are currently searching and there is a space ignore it a
+      // hacking it up to work with spaces
+      
+      if(!searching) {
+        triggerCharIndex = _.lastIndexOf(inputBuffer, settings.triggerChar);
+      }
+      
+      if (triggerCharIndex > -1 )  {
+        spaceSearch = false;
         currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
         currentDataQuery = utils.rtrim(currentDataQuery);
-
+        
         _.defer(_.bind(doSearch, this, currentDataQuery));
+        return;
+      }  
+      else if (elmInputBox.val().indexOf(' ') === -1 ){
+         spaceSearch = false;
+          // we need to check if there are no spaces and do the saerch with the first string
+          currentDataQuery = elmInputBox.val();
+          _.defer(_.bind(doSearch, this, currentDataQuery));
+          return;
       }
-      else if ($(this).val().indexOf(' ') === -1 ){
-        // we need to check if there are no spaces and do the saerch with the first string
-        currentDataQuery = $(this).val();
+      else if(previousCharWhiteSpace || spaceSearch){
+        spaceSearch = true;
+        currentDataQuery = inputBuffer.slice(triggerCharIndex + 1).join('');
+        currentDataQuery = utils.rtrim(currentDataQuery);
         _.defer(_.bind(doSearch, this, currentDataQuery));
+        return;
       }
+      spaceSearch = false;
     }
 
     function onInputBoxKeyPress(e) {
@@ -284,6 +335,7 @@
             elmActiveAutoCompleteItem.trigger('mousedown');
             return false;
           }
+  
 
           break;
       }
@@ -314,6 +366,7 @@
 
       if (!results.length) {
         hideAutoComplete();
+        searching = false;
         return;
       }
 
@@ -351,6 +404,7 @@
 
       elmAutocompleteList.show();
       elmDropDownList.show();
+      searching = true;
     }
 
     function doSearch(query) {
@@ -359,6 +413,7 @@
           populateDropdown(query, responseData);
         });
       } else {
+        searching = false;
         hideAutoComplete();
       }
     }
@@ -374,7 +429,7 @@
       init : function (domTarget) {
 
         domInput = domTarget;
-        
+
         initTextarea();
         initAutocomplete();
         initMentionsOverlay();
@@ -436,3 +491,17 @@
 })(jQuery, _, Bookface);
 
 
+$.fn.getCursorPosition = function() {
+    var el = $(this).get(0);
+    var pos = 0;
+    if('selectionStart' in el) {
+        pos = el.selectionStart;
+    } else if('selection' in document) {
+        el.focus();
+        var Sel = document.selection.createRange();
+        var SelLength = document.selection.createRange().text.length;
+        Sel.moveStart('character', -el.value.length);
+        pos = Sel.text.length - SelLength;
+    }
+    return pos;
+}

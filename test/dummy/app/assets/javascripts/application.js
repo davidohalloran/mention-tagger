@@ -16,23 +16,59 @@
 //= require mention-tagger
 
 
-$(document).ready(function(){
-  
-  $('textarea.mention').mentionTagging({
-    onDataRequest:function (mode, query, callback) {
-      var data = [
-        { id:1, name:'Kenneth Auchenberg', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:2, name:'Jon Froda', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:3, name:'Anders Pollas', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:4, name:'Kasper Hulthin', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:5, name:'Andreas Haugstrup', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
-        { id:6, name:'Pete Lacey', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' }
-      ];
-
-      data = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
-
-      callback.call(this, data);
-    }
+window.fbAsyncInit = function() {
+  // init the FB JS SDK
+  FB.init({
+    appId      : '529031143780019', // App ID from the App Dashboard
+    channelUrl : '//' + window.location.host + '/channel.html', // Channel File for x-domain communication
+    status     : true, // check the login status upon init?
+    cookie     : true, // set sessions cookies to allow your server to access the session?
+    xfbml      : true  // parse XFBML tags on this page?
   });
+    console.log(Bookface.login_status())
+  // Bookface.init(function(){  Bookface.connect(loadMentions, function(){}, {})  }, {});
+  // Additional initialization code such as adding Event Listeners goes here
   
+
+  var processFriend = function(friend){
+    friend['avatar'] = 'http://graph.facebook.com/'+ friend.id +'/picture?type=small'
+    friend['type'] = 'contact'
+    return friend
+  }
+   
+  
+}
+
+var loadMentions = function(arguments){
+  var data = []
+  // FB.api('/me?fields=friends', function(r){
+  //   $.each(r.friends.data, function(index, item){
+  //     data.push(processFriend(item))
+  //   })
+    
+    $('textarea.mentionbox').mentionTagging({
+      onDataRequest:function (mode, query, callback) {
+        var data = [
+          { id:1, name:'Kenneth Auchenberg', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
+          { id:2, name:'Jon Froda', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
+          { id:3, name:'Anders Pollas', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
+          { id:4, name:'Kasper Hulthin', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
+          { id:5, name:'Andreas Haugstrup', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' },
+          { id:6, name:'Pete Lacey', 'avatar':'http://cdn0.4dots.com/i/customavatars/avatar7112_1.gif', 'type':'contact' }
+        ];
+        
+        data = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+
+        callback.call(this, data);
+      }
+    });
+    
+  // });
+  
+
+};
+
+
+$(document).ready(function(){
+  loadMentions();
 })
