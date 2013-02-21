@@ -1,16 +1,19 @@
 @mixin fonts{
   font-size: 14px;
   font-family: Arial;
+  font-weight: normal;
 }
 
 .mentions-input-box {
   position: relative;
   background: #fff;
+  
+  @include fonts;
 }
 
 .mentions-input-box textarea {
   font-size:14px;
-  
+  font-family: Arial;
   width: 100%;
   display: block;
   height: 18px;
@@ -114,13 +117,14 @@
 }
 
 .mentions-input-box .mentions > div {
-  color: #d8dfea;
+  color: #fff;
   white-space: pre-wrap;
   width: 100%;
 }
 
 .mentions-input-box .mentions > div > strong {
-    @include fonts;
+ //   @include fonts;
+    font-weight:normal;
   background: #d8dfea;
 }
 

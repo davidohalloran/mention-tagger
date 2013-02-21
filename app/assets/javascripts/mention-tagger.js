@@ -36,7 +36,7 @@
       autocompleteListItemIcon   : _.template('<div class="icon <%= icon %>"></div>'),
       mentionsOverlay            : _.template('<div class="mentions"><div></div></div>'),
       mentionItemSyntax          : _.template('@[<%= value %>](<%= type %>:<%= id %>)'),
-      mentionItemHighlight       : _.template('<strong><span><%= value %></span></strong>')
+      mentionItemHighlight       : _.template('<strong class="tagged" data-id="<%= id %>" data-name="<%= name %>"><span><%= value %></span></strong>')
     }
   };
 
@@ -173,18 +173,7 @@
     function addMention(mention) {
 
       var currentMessage = getInputBoxValue();
-      
-      // old way
-      // // Using a regex to figure out positions
-      // var regex = new RegExp("^"+ currentDataQuery +"|\\" + settings.triggerChar + currentDataQuery, "gi");
-      // regex.exec(currentMessage);
-      // 
-      // var startCaretPosition = regex.lastIndex - currentDataQuery.length;
-      // var currentCaretPosition = regex.lastIndex;
-      // 
-      // var start = currentMessage.substr(0, startCaretPosition);
-      // var end = currentMessage.substr(currentCaretPosition, currentMessage.length);
-      
+            
       var currentCaretPosition = utils.getCursorPosition(elmInputBox);
       var partialWordLength = currentDataQuery.length;
       var currentText = elmInputBox.val();
@@ -192,7 +181,9 @@
       var start = currentText.substring(0, currentCaretPosition - partialWordLength)
       var end = currentText.substring(currentCaretPosition, currentText.length)
       
-      if (end == '') end = ' ';
+      if (end == ''){
+        end = ' '
+      };
       
       var startEndIndex = (start + mention.value).length + 1;
       
@@ -235,7 +226,7 @@
     }
     
     var previousCharWhiteSpace = function(){
-      var prevChar = elmInputBox.val().substring(elmInputBox.getCursorPosition()-2, elmInputBox.getCursorPosition()-1);
+      var prevChar = elmInputBox.val().substring(utils.getCursorPosition(elmInputBox)-2, utils.getCursorPosition(elmInputBox)-1);
       return  prevChar == ' ' || prevChar == '<br />' || prevChar == '\n' || prevChar == ''; 
     };
     
@@ -306,7 +297,14 @@
       }
 
       if (!elmAutocompleteList.is(':visible')) {
-        return true;
+        switch (e.keyCode) {
+          case KEY.RETURN:
+            return false
+          break;
+          default:
+            return true;
+          break;
+        }
       }
 
       switch (e.keyCode) {
@@ -460,6 +458,20 @@
         }
 
         callback.call(this, mentionsCollection);
+      },
+      getGraphFormatedString: function(){
+        var dirtystring = '';
+        var formattedString = '';
+        dirtystring = elmMentionsOverlay.clone()
+
+        dirtystring.find('strong').each(function(){
+          $(this).html('@[' + $(this).data('id') + ']')
+        })
+        
+        formattedString = dirtystring.text()
+        console.log(formattedString)
+        
+        return formattedString;
       }
     };
   };
@@ -500,6 +512,7 @@
   $.fn.setupMentionTagging = function(){
     var friends = [];
     self = this;
+
     FB.api('/me?fields=friends', function(r){
       $.each(r.friends.data, function(index, item){
         friends.push(processFriend(item))

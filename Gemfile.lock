@@ -2,7 +2,10 @@ PATH
   remote: .
   specs:
     mention-tagger (0.0.1)
+      bookface
+      jquery-rails
       rails (~> 3.2.12)
+      sass-rails (~> 3.2.3)
 
 GEM
   remote: http://rubygems.org/

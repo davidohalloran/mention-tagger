@@ -1,6 +1,6 @@
-# Mention Tagger - Tag those friends facebook style
+# Mention Tagger - Tag those friends Facebook style
 
-Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [jquery.mentionsInput](http://podio.github.com/jquery-mentions-input/). It takes a bog standard text box and pimps it out allow you to tag friends in the message. It has been changed quite heavily to work of using a space ' ' as the triggering character and have the list of friends to be the users facebook friends
+Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [jquery.mentionsInput](http://podio.github.com/jquery-mentions-input/). It takes a bog standard text box and pimps it out allow you to tag friends in the message. It has been changed quite heavily to work of using a space ' ' as the triggering character and have the list of friends to be the users Facebook friends
 
 ## Installation
 
@@ -24,7 +24,13 @@ wrapping the text area in a div is important as without it the plugin goes all s
 Finally when Bookface is connected and we have basic permissions for the user call the setup function
 
     $('textarea.mentionbox').setupMentionTagging()
+
+To get the message and the tagged friends out of the text box just call the following function 
     
+    $('textarea.mentionbox').mentionTagging('getGraphFormatedString')
+
+This will return a string like so ``i love @[61010765] a @[14801267]`` 
+     
 ## Testing
 
 To check out the gem in action pull the repo and go into ``test/dummy``.
