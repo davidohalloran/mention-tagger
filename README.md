@@ -25,11 +25,17 @@ Finally when Bookface is connected and we have basic permissions for the user ca
 
     $('textarea.mentionbox').setupMentionTagging()
 
+## Get data out
+
 To get the message and the tagged friends out of the text box just call the following function 
     
     $('textarea.mentionbox').mentionTagging('getGraphFormatedString')
 
 This will return a string like so ``i love @[61010765] a @[14801267]`` 
+
+## Change Styles
+
+The text box itself will autogrow to the size of the users message thanks to the Elastic jQuery pluggin. As for styling the fonts or sizes change the fonts on the ``.mentions-input-box`` class so that both the text field and the sudo highlighter are effected.
      
 ## Testing
 
