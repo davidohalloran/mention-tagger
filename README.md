@@ -1,12 +1,13 @@
 # Mention Tagger - Tag those friends facebook style
 
-Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [jquery.mentionsInput](http://podio.github.com/jquery-mentions-input/). It has been changed quite heavily to work of using a space ' ' as the triggering character and have the list of friends to be the users facebook friends
+Mention tagger is a jQuery plugin that is based on Kenneth Auchenbergs work on [jquery.mentionsInput](http://podio.github.com/jquery-mentions-input/). It takes a bog standard text box and pimps it out allow you to tag friends in the message. It has been changed quite heavily to work of using a space ' ' as the triggering character and have the list of friends to be the users facebook friends
 
 ## Installation
 
 First add the gem to your gem file
 
-    gem mention-tagger
+    source 'http://gems.betapond.com'
+    gem 'mention-tagger'
     
 Add ``//= require mention-tagger`` to your application.js file
 
@@ -31,3 +32,8 @@ To check out the gem in action pull the repo and go into ``test/dummy``.
 From the dummy folder open up ``app/views/home/index.html.erb`` and add in your ``appId`` to the ``window.fbAsyncInit`` method.
 
 Run the dummy app and navigate to the root directory and make sure you have authed your app
+
+## TODO
+* Get message from box in graph format
+* Easier removal of friends
+* Adding additional button for adding friends out side of the message
