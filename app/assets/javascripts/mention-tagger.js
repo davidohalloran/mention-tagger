@@ -487,6 +487,34 @@
 
     });
   };
+  
+  var processFriend = function(friend){
+    friend['avatar'] = 'http://graph.facebook.com/'+ friend.id +'/picture?type=large'
+    friend['type'] = 'contact';
+    friend.id = parseInt(friend.id)
+    return friend;
+  };
+  
+  // could be cleaner
+  //sets up mention tagging for your facebook friends
+  $.fn.setupMentionTagging = function(){
+    var friends = [];
+    self = this;
+    FB.api('/me?fields=friends', function(r){
+      $.each(r.friends.data, function(index, item){
+        friends.push(processFriend(item))
+      })
+
+      self.mentionTagging({
+        onDataRequest:function (mode, query, callback) {
+          var data = friends      
+          data = _.filter(data, function(item) { return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1 });
+          callback.call(this, data);
+        }
+      });
+
+    });
+  }
 
 })(jQuery, _, Bookface);
 

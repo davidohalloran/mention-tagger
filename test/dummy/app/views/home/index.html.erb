@@ -18,7 +18,7 @@
       xfbml      : true  // parse XFBML tags on this page?
     });
 
-    Bookface.init(function(){Bookface.connect(loadMentions, function(){}, {}); }, {});
+    Bookface.init(function(){Bookface.connect($('textarea.mentionbox').setupMentionTagging(), function(){}, {}); }, {});
     // Additional initialization code such as adding Event Listeners goes here
      
   };

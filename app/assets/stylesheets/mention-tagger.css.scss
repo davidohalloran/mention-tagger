@@ -1,3 +1,7 @@
+@mixin fonts{
+  font-size: 14px;
+  font-family: Arial;
+}
 
 .mentions-input-box {
   position: relative;
@@ -5,6 +9,8 @@
 }
 
 .mentions-input-box textarea {
+  font-size:14px;
+  
   width: 100%;
   display: block;
   height: 18px;
@@ -16,7 +22,9 @@
   position: relative;
   outline: 0;
   resize: none;
+  
 
+  
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
@@ -106,13 +114,13 @@
 }
 
 .mentions-input-box .mentions > div {
-  color: #fff;
+  color: #d8dfea;
   white-space: pre-wrap;
   width: 100%;
 }
 
 .mentions-input-box .mentions > div > strong {
-  font-weight:normal;
+    @include fonts;
   background: #d8dfea;
 }
 
