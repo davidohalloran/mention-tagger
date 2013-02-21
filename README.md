@@ -24,3 +24,10 @@ Finally when Bookface is connected and we have basic permissions for the user ca
 
     $('textarea.mentionbox').setupMentionTagging()
     
+## Testing
+
+To check out the gem in action pull the repo and go into ``test/dummy``.
+
+From the dummy folder open up ``app/views/home/index.html.erb`` and add in your ``appId`` to the ``window.fbAsyncInit`` method.
+
+Run the dummy app and navigate to the root directory and make sure you have authed your app
