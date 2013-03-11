@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mention-tagger (0.0.1)
+    mention-tagger (0.0.2)
       bookface
       jquery-rails
       rails (~> 3.2.12)
