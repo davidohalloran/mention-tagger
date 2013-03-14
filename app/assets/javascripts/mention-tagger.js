@@ -469,9 +469,23 @@
         })
         
         formattedString = dirtystring.text()
-        console.log(formattedString)
+        // console.log(formattedString)
         
         return formattedString;
+      },
+      
+      getGraphIds: function(){
+        var dirtystring = '';
+        var graphIds = [];
+        dirtystring = elmMentionsOverlay.clone()
+
+        dirtystring.find('strong').each(function(){
+          graphIds.push($(this).data('id'));
+        })
+        
+        // console.log(graphIds)
+        
+        return graphIds;
       }
     };
   };
