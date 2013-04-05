@@ -497,21 +497,22 @@
     if (typeof method === 'object' || !method) {
       settings = method;
     }
-
-    return this.each(function () {
+    var val
+    this.each(function () {
       var instance = $.data(this, 'mentionsInput') || $.data(this, 'mentionsInput', new MentionsInput(settings));
 
       if (_.isFunction(instance[method])) {
-        return instance[method].apply(this, Array.prototype.slice.call(outerArguments, 1));
+        val = instance[method].apply(this, Array.prototype.slice.call(outerArguments, 1));
 
       } else if (typeof method === 'object' || !method) {
-        return instance.init.call(this, this);
+        val = instance.init.call(this, this);
 
       } else {
         $.error('Method ' + method + ' does not exist');
       }
 
     });
+    return val;
   };
   
   var processFriend = function(friend){
